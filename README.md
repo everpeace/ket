@@ -53,6 +53,7 @@ func TestMain(m *testing.M) {
 			ctx,
 			setup.WithBinaryDirectory("./_dev/bin"),
 			setup.WithKindClusterName("ket-controller"),
+			setup.WithKindConfig("./kind.conf"),
 			setup.WithKindVersion("0.11.0"),
 			setup.WithKubernetesVersion("1.20.2"),
 			setup.WithKubeconfigPath("./.kubeconfig"),

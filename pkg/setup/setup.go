@@ -36,6 +36,13 @@ func WithKindClusterName(kindClusterName string) Option {
 	}
 }
 
+func WithKindConfig(configPath string) Option {
+	return func(k *KET) error {
+		k.kindConfig = configPath
+		return nil
+	}
+}
+
 func WithKubernetesVersion(kubernetesVersion string) Option {
 	return func(k *KET) error {
 		k.kubernetesVersion = kubernetesVersion
@@ -82,6 +89,7 @@ type KET struct {
 	binDir            string
 	kindVersion       string
 	kindClusterName   string
+	kindConfig        string
 	kubernetesVersion string
 	kubeconfigPath    string
 	crdKustomizePath  string
@@ -99,6 +107,7 @@ func NewKET() *KET {
 		binDir:            "./bin",
 		kindVersion:       "0.11.0",
 		kindClusterName:   "ket",
+		kindConfig:        "",
 		kubernetesVersion: "1.20.2",
 		kubeconfigPath:    filepath.Join(homeDir, ".kube", "config"),
 		crdKustomizePath:  "",
@@ -133,7 +142,7 @@ func Start(ctx context.Context, options ...Option) (*ClientSet, error) {
 		return nil, fmt.Errorf("failed to delete kind cluster %s: %w", ket.kindClusterName, err)
 	}
 
-	err = kind.CreateCluster(ctx, ket.kindClusterName)
+	err = kind.CreateCluster(ctx, ket.kindClusterName, ket.kindConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create kind cluster %s: %w", ket.kindClusterName, err)
 	}

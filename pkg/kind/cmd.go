@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (k *Kind) CreateCluster(ctx context.Context, clusterName string) error {
+func (k *Kind) CreateCluster(ctx context.Context, clusterName, kindConfig string) error {
 	args := []string{
 		"create",
 		"cluster",
@@ -15,6 +15,13 @@ func (k *Kind) CreateCluster(ctx context.Context, clusterName string) error {
 		"kindest/node:v" + k.kubernetesVersion,
 		"--kubeconfig",
 		k.kubeConfigPath,
+	}
+
+	if kindConfig != "" {
+		args = append(args, []string{
+			"--config",
+			kindConfig,
+		}...)
 	}
 
 	err := k.Execute(ctx, args)
